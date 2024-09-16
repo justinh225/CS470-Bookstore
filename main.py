@@ -1,60 +1,70 @@
 import tkinter as tk
 import tkinter.font as tk_font
 
-background_color = "#B3FF00"
-text_color = "#0035FF"
-store_name = "20 For 20 Bookstore"
-subtitle = "A bookstore for readers"
-manager = "Justin Heimes"
-book_catalog = {
-    "Kids": {
-        "No, David": "David Shannon",
-        "David Goes to School": "David Shannon",
-        "David Gets in Trouble": "David Shannon",
-        "It's Christmas, David!": "David Shannon",
-        "Grow Up, David": "David Shannon"
-    },
-    "Horror": {
-        "It": "Stephen King",
-        "The Shining": "Stephen King",
-        "Cabin at the End of the World": "Paul G. Tremblay",
-        "The Call of Cthulhu": "H.P. Lovecraft",
-        "The Cats of Ulthar": "H.P. Lovecraft"
-    },
-    "Dystopian": {
-        "The Hunger Games": "Suzanne Collins",
-        "Catching Fire": "Suzanne Collins",
-        "Mockingjay": "Suzanne Collins",
-        "The Ballad of Songbirds and Snakes": "Suzanne Collins",
-        "1984": "George Orwell"
-    },
-    "Classical": { 
-        "Divine Comedy": "Dante Alighieri",
-        "Meditations": "Seneca",
-        "Crime and Punishment": "Fyodor Dostoevsky",
-        "Animal Farm": "George Orwell",
-        "The Catcher in the Rye": "J.D. Salinger" 
-    }
-}
-
 global genre_search
 global author_search
 global title_search
 global display_frame
 
+background_color = "#B3FF00"
+text_color = "#0035FF"
+store_name = "20 For 20 Bookstore"
+subtitle = "A bookstore for readers"
+manager = "Justin Heimes"
+
+#Setup Window
+main_window = tk.Tk()
+main_window.title(store_name)
+main_window.geometry = ('700x700')
+main_window.configure(background=background_color)
+main_window.resizable(width=False, height=False)
+
+book_catalog = {
+    "Kids": {
+        "David Shannon": [ ("No, David", tk.PhotoImage(file="Assets\\david_no.ppm", height=200, width=155)),
+                           ("David Goes to School",  tk.PhotoImage(file="Assets\\david_school.ppm", height=200, width=155)),
+                           ("David Gets in Trouble", tk.PhotoImage(file="Assets\\david_trouble.ppm", height=200, width=155)),
+                           ("It's Christmas, David!", tk.PhotoImage(file="Assets\\david_christmas.ppm", height=200, width=155)),
+                           ("Grow Up, David", tk.PhotoImage(file="Assets\\david_grow.ppm", height=200, width=155))]
+    },
+    "Horror": {
+        "Stephen King": [ ("It", tk.PhotoImage(file="Assets\\it.ppm", height=200, width=155)), 
+                          ("The Shining", tk.PhotoImage(file="Assets\\shining.ppm", height=200, width=155))],
+        "Paul G. Tremblay": [ ("Cabin at the End of the World", tk.PhotoImage(file="Assets\\cabin.ppm", height=200, width=155)) ],
+        "H.P Lovecraft": [ ("The Call of Cthulhu", tk.PhotoImage(file="Assets\\cthulu.ppm", height=200, width=155)), 
+                           ("The Cats of Ulthar", tk.PhotoImage(file="Assets\\ulthar.ppm", height=200, width=155)) ]
+    },
+    "Dystopian": {
+        "Suzanne Collins": [ 
+            ("The Hunger Games", tk.PhotoImage(file="Assets\\hunger.ppm", height=200, width=155)),
+            ("Catching Fire", tk.PhotoImage(file="Assets\\fire.ppm", height=200, width=155)), 
+            ("Mockingjay", tk.PhotoImage(file="Assets\\mockingjay.ppm", height=200, width=155)),
+            ("The Ballad of Songbirds and Snakes", tk.PhotoImage(file="Assets\\ballad.ppm", height=200, width=155)) ],
+        "George Orwell": [ ("1984", tk.PhotoImage(file="Assets\\1984.ppm", height=200, width=155)) ]
+    },
+    "Classical": { 
+        "Dante Alighieri": [ ("Divine Comedy", tk.PhotoImage(file="Assets\\comedy.ppm", height=200, width=155)) ],
+        "Marcus Aurelias": [ ("Meditations", tk.PhotoImage(file="Assets\\meditations.ppm", height=200, width=155)) ],
+        "Fyodor Dostoevsky": [ ("Crime and Punishment", tk.PhotoImage(file="Assets\\crime.ppm", height=200, width=155)) ],
+        "George Orwell": [ ("Animal Farm", tk.PhotoImage(file="Assets\\animal.ppm", height=200, width=155)) ],
+        "J.D. Salinger": [ ("The Catcher in the Rye", tk.PhotoImage(file="Assets\\catcher.ppm", height=200, width=155)) ] 
+    }
+}
+
 # Gets the value from a search bar and updates mainpage.
 # If the search bar is empty, displays all items
 def search_mainpage():
-    # Clear display
-    while list(display_frame.children.keys()):
-        key = list(display_frame.children.keys())[0]
-        display_frame.children[key].destroy()
-    
     # Get the search content
     search_content = search_box.get("1.0", tk.END)
     search_content = search_content.strip()
 
+    # Clear display
+    while list(display_frame.children.keys()):
+        key = list(display_frame.children.keys())[0]
+        display_frame.children[key].destroy()
+
     # Search and update the display
+    # Search genre
     if(genre_search.get()):
         for key in book_catalog:
             if(key == search_content):
@@ -63,29 +73,49 @@ def search_mainpage():
                 genre_label.pack(side="top", anchor="w")
                 for author in book_catalog[key]:
                     for title in book_catalog[key][author]:
-                        genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=heading_font, text=title)
-                        genre_label.pack(side="left")
-                        genre_frame.pack(side="top")
+                        title_frame = tk.Frame(master=genre_frame, background=background_color)
+                        image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
+                        title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
+                        image_label.pack(side="top")
+                        title_label.pack(side="top")
+                        title_frame.pack(side="left")
+                genre_frame.pack(side="top")
+    # Search authors
     if(author_search.get()):
-        for genre in book_catalog:
-            for author in book_catalog[genre]:
+        for key in book_catalog:
+            genre_frame = tk.Frame(master=display_frame, background=background_color)
+            genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
+            genre_label.pack(side="top", anchor="w")
+            for author in book_catalog[key]:
                 if(author == search_content):
-                    label = tk.Label(text="Author")
-                    label.pack(side="top", anchor="w")
+                    for title in book_catalog[key][author]:
+                        title_frame = tk.Frame(master=genre_frame, background=background_color)
+                        image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
+                        title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
+                        image_label.pack(side="top")
+                        title_label.pack(side="top")
+                        title_frame.pack(side="left", padx=20)
+            genre_frame.pack(side="top")
+    # Search title
     if(title_search.get()):
-        for genre in book_catalog:
-            for author in book_catalog[genre]:
-                for title in book_catalog[author]:
-                    if(title == search_content):
-                        label = tk.Label(text="Title")
-                        label.pack(side="top", anchor="w")
-
-#Setup Window
-main_window = tk.Tk()
-main_window.title(store_name)
-main_window.geometry = ('700x700')
-main_window.configure(background=background_color)
-main_window.resizable(width=False, height=False)
+        for key in book_catalog:
+            genre_frame = tk.Frame(master=display_frame, background=background_color)
+            genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
+            genre_label.pack(side="top", anchor="w")
+            for author in book_catalog[key]:
+                    for title in book_catalog[key][author]:
+                        print("|" + title[0] + "|")
+                        print("|" + search_content+ "|")
+                        print("|" + title[0] == search_content + "|")
+                        if(title[0] == search_content):
+                            title_frame = tk.Frame(master=genre_frame, background=background_color)
+                            image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
+                            title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
+                            image_label.pack(side="top")
+                            title_label.pack(side="top")
+                            title_frame.pack(side="left", padx=20)
+            genre_frame.pack(side="top")
+            
 
 # Setup Fonts
 title_font = tk_font.Font(family="Arial", size=34)
@@ -133,8 +163,12 @@ for key in book_catalog:
     genre_label.pack(side="top", anchor="w")
     for author in book_catalog[key]:
         for title in book_catalog[key][author]:
-            genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=heading_font, text=title)
-            genre_label.pack(side="left")
+            title_frame = tk.Frame(master=genre_frame, background=background_color)
+            image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
+            title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
+            image_label.pack(side="top")
+            title_label.pack(side="top")
+            title_frame.pack(side="left", padx=20)
     genre_frame.pack(side="top")
 
 # MainLoop
