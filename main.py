@@ -40,17 +40,32 @@ book_catalog = {
 global genre_search
 global author_search
 global title_search
+global display_frame
 
 # Gets the value from a search bar and updates mainpage.
 # If the search bar is empty, displays all items
 def search_mainpage():
+    # Clear display
+    while list(display_frame.children.keys()):
+        key = list(display_frame.children.keys())[0]
+        display_frame.children[key].destroy()
+    
+    # Get the search content
     search_content = search_box.get("1.0", tk.END)
     search_content = search_content.strip()
+
+    # Search and update the display
     if(genre_search.get()):
         for key in book_catalog:
             if(key == search_content):
-                label = tk.Label(text="Genre")
-                label.pack(side="top", anchor="w")
+                genre_frame = tk.Frame(master=display_frame, background=background_color)
+                genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
+                genre_label.pack(side="top", anchor="w")
+                for author in book_catalog[key]:
+                    for title in book_catalog[key][author]:
+                        genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=heading_font, text=title)
+                        genre_label.pack(side="left")
+                        genre_frame.pack(side="top")
     if(author_search.get()):
         for genre in book_catalog:
             for author in book_catalog[genre]:
@@ -86,13 +101,14 @@ subtitle_label.pack(side="top")
 heading_label.pack(side="top")
 
 # Add Search Bar
-search_button = tk.Button(text="Search", height=1, command=search_mainpage)
+search_frame = tk.Frame(main_window, background=background_color)
+search_button = tk.Button(master=search_frame, text="Search", height=1, command=search_mainpage)
 search_button.pack(side="left", anchor="w", padx=15)
-search_box = tk.Text(height=1)
+search_box = tk.Text(master=search_frame, height=1)
 search_box.pack(side="left", anchor="w", padx=15)
 
 # Setup MenuButton
-search_type = tk.Menubutton(master=main_window, text="Search Type", relief="raised")
+search_type = tk.Menubutton(master=search_frame, text="Search Type", relief="raised")
 search_type.menu = tk.Menu(search_type)
 search_type["menu"] = search_type.menu
 
@@ -104,6 +120,22 @@ search_type.menu.add_checkbutton(label="Genre", variable=genre_search)
 search_type.menu.add_checkbutton(label="Author", variable=author_search)
 search_type.menu.add_checkbutton(label="Title", variable=title_search)
 search_type.pack(side="left", anchor="w", padx=15)
+search_frame.pack(side="top")
+
+# Add Container for book display
+display_frame = tk.Frame(main_window, background=background_color)
+display_frame.pack(side="top")
+
+# Add default display
+for key in book_catalog:
+    genre_frame = tk.Frame(master=display_frame, background=background_color)
+    genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
+    genre_label.pack(side="top", anchor="w")
+    for author in book_catalog[key]:
+        for title in book_catalog[key][author]:
+            genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=heading_font, text=title)
+            genre_label.pack(side="left")
+    genre_frame.pack(side="top")
 
 # MainLoop
 main_window.mainloop()
