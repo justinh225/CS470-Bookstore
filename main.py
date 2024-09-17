@@ -5,6 +5,7 @@ global genre_search
 global author_search
 global title_search
 global display_frame
+global cart
 
 background_color = "#B3FF00"
 text_color = "#0035FF"
@@ -19,35 +20,37 @@ main_window.geometry = ('700x700')
 main_window.configure(background=background_color)
 main_window.resizable(width=False, height=False)
 
+cart = list()
+cart.append(("Test", tk.IntVar(value=0)))
 book_catalog = {
     "Kids": {
-        "David Shannon": [ ("No, David", tk.PhotoImage(file="Assets\\david_no.ppm", height=200, width=155)),
-                           ("David Goes to School",  tk.PhotoImage(file="Assets\\david_school.ppm", height=200, width=155)),
-                           ("David Gets in Trouble", tk.PhotoImage(file="Assets\\david_trouble.ppm", height=200, width=155)),
-                           ("It's Christmas, David!", tk.PhotoImage(file="Assets\\david_christmas.ppm", height=200, width=155)),
-                           ("Grow Up, David", tk.PhotoImage(file="Assets\\david_grow.ppm", height=200, width=155))]
+        "David Shannon": [ ("No, David", tk.PhotoImage(file="Assets\\david_no.ppm", height=200, width=155), tk.IntVar()),
+                           ("David Goes to School",  tk.PhotoImage(file="Assets\\david_school.ppm", height=200, width=155), tk.IntVar()),
+                           ("David Gets in Trouble", tk.PhotoImage(file="Assets\\david_trouble.ppm", height=200, width=155), tk.IntVar()),
+                           ("It's Christmas, David!", tk.PhotoImage(file="Assets\\david_christmas.ppm", height=200, width=155), tk.IntVar()),
+                           ("Grow Up, David", tk.PhotoImage(file="Assets\\david_grow.ppm", height=200, width=155), tk.IntVar())]
     },
     "Horror": {
-        "Stephen King": [ ("It", tk.PhotoImage(file="Assets\\it.ppm", height=200, width=155)), 
-                          ("The Shining", tk.PhotoImage(file="Assets\\shining.ppm", height=200, width=155))],
-        "Paul G. Tremblay": [ ("Cabin at the End of the World", tk.PhotoImage(file="Assets\\cabin.ppm", height=200, width=155)) ],
-        "H.P Lovecraft": [ ("The Call of Cthulhu", tk.PhotoImage(file="Assets\\cthulu.ppm", height=200, width=155)), 
-                           ("The Cats of Ulthar", tk.PhotoImage(file="Assets\\ulthar.ppm", height=200, width=155)) ]
+        "Stephen King": [ ("It", tk.PhotoImage(file="Assets\\it.ppm", height=200, width=155), tk.IntVar()), 
+                          ("The Shining", tk.PhotoImage(file="Assets\\shining.ppm", height=200, width=155), tk.IntVar())],
+        "Paul G. Tremblay": [ ("Cabin at the End of the World", tk.PhotoImage(file="Assets\\cabin.ppm", height=200, width=155), tk.IntVar()) ],
+        "H.P Lovecraft": [ ("The Call of Cthulhu", tk.PhotoImage(file="Assets\\cthulu.ppm", height=200, width=155), tk.IntVar()), 
+                           ("The Cats of Ulthar", tk.PhotoImage(file="Assets\\ulthar.ppm", height=200, width=155), tk.IntVar()) ]
     },
     "Dystopian": {
         "Suzanne Collins": [ 
-            ("The Hunger Games", tk.PhotoImage(file="Assets\\hunger.ppm", height=200, width=155)),
-            ("Catching Fire", tk.PhotoImage(file="Assets\\fire.ppm", height=200, width=155)), 
-            ("Mockingjay", tk.PhotoImage(file="Assets\\mockingjay.ppm", height=200, width=155)),
-            ("The Ballad of Songbirds and Snakes", tk.PhotoImage(file="Assets\\ballad.ppm", height=200, width=155)) ],
-        "George Orwell": [ ("1984", tk.PhotoImage(file="Assets\\1984.ppm", height=200, width=155)) ]
+            ("The Hunger Games", tk.PhotoImage(file="Assets\\hunger.ppm", height=200, width=155), tk.IntVar()),
+            ("Catching Fire", tk.PhotoImage(file="Assets\\fire.ppm", height=200, width=155), tk.IntVar()), 
+            ("Mockingjay", tk.PhotoImage(file="Assets\\mockingjay.ppm", height=200, width=155), tk.IntVar()),
+            ("The Ballad of Songbirds and Snakes", tk.PhotoImage(file="Assets\\ballad.ppm", height=200, width=155), tk.IntVar()) ],
+        "George Orwell": [ ("1984", tk.PhotoImage(file="Assets\\1984.ppm", height=200, width=155), tk.IntVar()) ]
     },
     "Classical": { 
-        "Dante Alighieri": [ ("Divine Comedy", tk.PhotoImage(file="Assets\\comedy.ppm", height=200, width=155)) ],
-        "Marcus Aurelias": [ ("Meditations", tk.PhotoImage(file="Assets\\meditations.ppm", height=200, width=155)) ],
-        "Fyodor Dostoevsky": [ ("Crime and Punishment", tk.PhotoImage(file="Assets\\crime.ppm", height=200, width=155)) ],
-        "George Orwell": [ ("Animal Farm", tk.PhotoImage(file="Assets\\animal.ppm", height=200, width=155)) ],
-        "J.D. Salinger": [ ("The Catcher in the Rye", tk.PhotoImage(file="Assets\\catcher.ppm", height=200, width=155)) ] 
+        "Dante Alighieri": [ ("Divine Comedy", tk.PhotoImage(file="Assets\\comedy.ppm", height=200, width=155), tk.IntVar()) ],
+        "Marcus Aurelias": [ ("Meditations", tk.PhotoImage(file="Assets\\meditations.ppm", height=200, width=155), tk.IntVar()) ],
+        "Fyodor Dostoevsky": [ ("Crime and Punishment", tk.PhotoImage(file="Assets\\crime.ppm", height=200, width=155), tk.IntVar()) ],
+        "George Orwell": [ ("Animal Farm", tk.PhotoImage(file="Assets\\animal.ppm", height=200, width=155), tk.IntVar()) ],
+        "J.D. Salinger": [ ("The Catcher in the Rye", tk.PhotoImage(file="Assets\\catcher.ppm", height=200, width=155), tk.IntVar()) ] 
     }
 }
 
@@ -76,8 +79,10 @@ def search_mainpage():
                         title_frame = tk.Frame(master=genre_frame, background=background_color)
                         image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
                         title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
-                        image_label.pack(side="top")
-                        title_label.pack(side="top")
+                        add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+                        image_label.pack(side = "top")
+                        title_label.pack(side = "top")
+                        add_cart_button.pack(side = "top")
                         title_frame.pack(side="left")
                 genre_frame.pack(side="top")
     # Search authors
@@ -92,8 +97,10 @@ def search_mainpage():
                         title_frame = tk.Frame(master=genre_frame, background=background_color)
                         image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
                         title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
-                        image_label.pack(side="top")
-                        title_label.pack(side="top")
+                        add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+                        image_label.pack(side = "top")
+                        title_label.pack(side = "top")
+                        add_cart_button.pack(side = "top")
                         title_frame.pack(side="left", padx=20)
             genre_frame.pack(side="top")
     # Search title
@@ -104,18 +111,23 @@ def search_mainpage():
             genre_label.pack(side="top", anchor="w")
             for author in book_catalog[key]:
                     for title in book_catalog[key][author]:
-                        print("|" + title[0] + "|")
-                        print("|" + search_content+ "|")
-                        print("|" + title[0] == search_content + "|")
                         if(title[0] == search_content):
                             title_frame = tk.Frame(master=genre_frame, background=background_color)
                             image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
                             title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
-                            image_label.pack(side="top")
-                            title_label.pack(side="top")
+                            add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+                            image_label.pack(side = "top")
+                            title_label.pack(side = "top")
+                            add_cart_button.pack(side = "top")
                             title_frame.pack(side="left", padx=20)
             genre_frame.pack(side="top")
-            
+
+def add_to_cart():
+    for key in book_catalog:
+        for author in book_catalog[key]:
+            for title in book_catalog[key][author]:
+                if(title[2].get() == 1 and cart.count(title[0]) <= 0):
+                    cart.append((title[0], tk.IntVar()))
 
 # Setup Fonts
 title_font = tk_font.Font(family="Arial", size=34)
@@ -129,6 +141,21 @@ heading_label = tk.Label(text=manager, font=heading_font, foreground=text_color,
 title_label.pack(side="top")
 subtitle_label.pack(side="top")
 heading_label.pack(side="top")
+
+# Cart
+print(cart)
+cart_frame = tk.Frame(master=main_window)
+for string in cart:
+    cart_item_frame = tk.Label(master=cart_frame)
+    
+    cart_item_check = tk.Checkbutton(master=cart_item_frame, variable=string[1])
+    cart_item_label = tk.Label(master=cart_item_frame, text=string[0])
+    cart_item_check.pack(side="left", anchor="w")
+    cart_item_label.pack(side="left", anchor="w")
+    
+    cart_item_frame.pack(side="top") 
+cart_frame.pack(side="right")
+    
 
 # Add Search Bar
 search_frame = tk.Frame(main_window, background=background_color)
@@ -161,15 +188,22 @@ for key in book_catalog:
     genre_frame = tk.Frame(master=display_frame, background=background_color)
     genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
     genre_label.pack(side="top", anchor="w")
+
     for author in book_catalog[key]:
         for title in book_catalog[key][author]:
             title_frame = tk.Frame(master=genre_frame, background=background_color)
             image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
-            title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
-            image_label.pack(side="top")
-            title_label.pack(side="top")
+            title_label = tk.Label(master=title_frame, name="title", foreground=text_color, background=background_color, font=heading_font, text=title[0])
+            add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+            image_label.pack(side = "top")
+            title_label.pack(side = "top")
+            add_cart_button.pack(side = "top")
             title_frame.pack(side="left", padx=20)
     genre_frame.pack(side="top")
+
+add_cart_button = tk.Button(master=main_window, text="Add to Cart", command=add_to_cart)
+add_cart_button.pack(side="bottom")
+    
 
 # MainLoop
 main_window.mainloop()
