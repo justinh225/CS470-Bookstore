@@ -17,6 +17,7 @@ manager = "Justin Heimes"
 main_window = tk.Tk()
 main_window.title(store_name)
 main_window.geometry = ('700x700')
+main_window.maxsize(height="1000", width="1900")
 main_window.configure(background=background_color)
 main_window.resizable(width=False, height=False)
 
@@ -129,6 +130,10 @@ def add_to_cart():
                 if(title[2].get() == 1 and cart.count(title[0]) <= 0):
                     cart.append((title[0], tk.IntVar()))
 
+def view_cart():
+    cart_window = tk.Toplevel()
+
+
 # Setup Fonts
 title_font = tk_font.Font(family="Arial", size=34)
 subtitle_font = tk_font.Font(family="Arial", size=24)
@@ -180,12 +185,15 @@ search_type.pack(side="left", anchor="w", padx=15)
 search_frame.pack(side="top")
 
 # Add Container for book display
-display_frame = tk.Frame(main_window, background=background_color)
-display_frame.pack(side="top")
+display_scroll = tk.Scrollbar(master=main_window)
+display_scroll.pack(side="right", fill="y")
+
+display_canvas = tk.Canvas(main_window, background=background_color, height=800, yscrollcommand=display_scroll.set)
+display_canvas.pack(side="top")
 
 # Add default display
 for key in book_catalog:
-    genre_frame = tk.Frame(master=display_frame, background=background_color)
+    genre_frame = tk.Frame(master=display_canvas, background=background_color)
     genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
     genre_label.pack(side="top", anchor="w")
 
@@ -194,15 +202,18 @@ for key in book_catalog:
             title_frame = tk.Frame(master=genre_frame, background=background_color)
             image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
             title_label = tk.Label(master=title_frame, name="title", foreground=text_color, background=background_color, font=heading_font, text=title[0])
-            add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+            select_title_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
             image_label.pack(side = "top")
             title_label.pack(side = "top")
-            add_cart_button.pack(side = "top")
+            select_title_button.pack(side = "top")
             title_frame.pack(side="left", padx=20)
     genre_frame.pack(side="top")
 
-add_cart_button = tk.Button(master=main_window, text="Add to Cart", command=add_to_cart)
-add_cart_button.pack(side="bottom")
+select_title_button = tk.Button(master=main_window, text="Add to Cart", command=add_to_cart)
+select_title_button.pack(side="left", anchor="center")
+
+view_cart_button = tk.Button(master=main_window, text="View Cart/Checkout", command=view_cart)
+view_cart_button.pack(side="left", anchor="center")
     
 
 # MainLoop
