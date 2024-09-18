@@ -1,3 +1,4 @@
+from random import choice, seed
 import tkinter as tk
 import tkinter.font as tk_font
 
@@ -154,19 +155,57 @@ def view_cart():
     price_label.pack(side="top")
 
     # Setup Buttons
-    remove_from_cart = tk.Button(master=cart_window, text="Remove Selected")
+    cancel_button = tk.Button(master=cart_window, text="Cancel", command=lambda:cancel_callback(cart_window))
+    cancel_button.pack(side="left")
+    remove_from_cart = tk.Button(master=cart_window, text="Remove Selected", command=lambda:remove_selected(cart_listbox, price_label))
     remove_from_cart.pack(side="left")
     empty_cart_button = tk.Button(master=cart_window, text="Empty Cart", command= lambda:empty_cart(cart_listbox, price_label))
     empty_cart_button.pack(side="left")
-    checkout_button = tk.Button(master=cart_window, text="Checkout")
+    checkout_button = tk.Button(master=cart_window, text="Complete Purchase", command=lambda:complete_purchase(cart_window))
     checkout_button.pack(side="left")
-
+    
 def empty_cart(list_box, total_label):
     cart.clear()
     list_box.delete(0, tk.END)
     total_label['text'] = "Total: $0.00"
     
+def remove_selected(list_box, price_label):
+    selected_items = list_box.curselection()
+    counter = 0
+    for index in selected_items:
+        index -= counter
+        for item in cart:
+            if(item[0] == list_box.get(index)):
+                cart.remove(item)
+                break
+        list_box.delete(index)
+        counter += 1
+    price = cart.__len__() * 20
+    price_label['text'] = "Total: $" + price.__str__() + ".00"
+    
+def complete_purchase(cart_window):
+    complete_window = tk.Toplevel(background=background_color)
+    complete_window.resizable(width=False, height=False)
+    complete_window.maxsize(height=500, width=700)
+    thank_you_label = tk.Label(master=complete_window, text="Thank You!", font=subtitle_font, background=background_color)
+    thank_you_label.pack(side="top")
+    response_time_label = tk.Label(master=complete_window, text="Please allow " + choice(range(0, 30)).__str__() + " minutes to complete your order", background=background_color)
+    response_time_label.pack(side="top")
+    finish_button = tk.Button(master=complete_window, text="Finish", command=lambda:finish_callback(cart_window, complete_window))
+    finish_button.pack(side="top")
+    cart.clear()
 
+def finish_callback(cart_window, complete_window):
+    complete_window.destroy()
+    cart_window.destroy()
+
+def cancel_callback(cart_window):
+    cart_window.destroy()
+    for key in book_catalog:
+        for author in book_catalog[key]:
+            for title in book_catalog[key][author]:
+                title[2].set(0)
+    
 # Setup Fonts
 title_font = tk_font.Font(family="Arial", size=34)
 subtitle_font = tk_font.Font(family="Arial", size=24)
@@ -228,10 +267,13 @@ for key in book_catalog:
     genre_frame.pack(side="top")
 
 select_title_button = tk.Button(master=main_window, text="Add to Cart", command=add_to_cart)
-select_title_button.pack(side="left", anchor="center")
+select_title_button.pack(side="top")
 
 view_cart_button = tk.Button(master=main_window, text="View Cart/Checkout", command=view_cart)
-view_cart_button.pack(side="left", anchor="center")
+view_cart_button.pack(side="top")
+
+view_cart_button = tk.Button(master=main_window, text="Exit")
+view_cart_button.pack(side="top")
     
 
 # MainLoop
