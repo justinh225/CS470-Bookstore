@@ -6,6 +6,7 @@ global author_search
 global title_search
 global display_frame
 global cart
+global cart_listbox
 
 background_color = "#B3FF00"
 text_color = "#0035FF"
@@ -17,7 +18,7 @@ manager = "Justin Heimes"
 main_window = tk.Tk()
 main_window.title(store_name)
 main_window.geometry = ('700x700')
-main_window.maxsize(height="1000", width="1900")
+#main_window.maxsize(height="1000", width="1900")
 main_window.configure(background=background_color)
 main_window.resizable(width=False, height=False)
 
@@ -131,8 +132,40 @@ def add_to_cart():
                     cart.append((title[0], tk.IntVar()))
 
 def view_cart():
-    cart_window = tk.Toplevel()
+    # Setup Cart Window
+    cart_window = tk.Toplevel(background=background_color)
+    cart_window.resizable(width=False, height=False)
+    cart_window.maxsize(height=500, width=700)
+    
+    # Setup Label
+    cart_label = tk.Label(master=cart_window, text="Your Cart:", foreground=text_color, background=background_color)
+    cart_label.pack(side="top")
 
+    # Setup Listbox
+    cart_listbox = tk.Listbox(master=cart_window, selectmode=tk.MULTIPLE, foreground=text_color)
+    index = 0
+    for title in cart:
+        cart_listbox.insert(index, title[0])
+    cart_listbox.pack(side="top")
+
+    # Setup Price
+    price = cart.__len__() * 20
+    price_label = tk.Label(master=cart_window, text="Total: $" + price.__str__() + ".00")
+    price_label.pack(side="top")
+
+    # Setup Buttons
+    remove_from_cart = tk.Button(master=cart_window, text="Remove Selected")
+    remove_from_cart.pack(side="left")
+    empty_cart_button = tk.Button(master=cart_window, text="Empty Cart", command= lambda:empty_cart(cart_listbox, price_label))
+    empty_cart_button.pack(side="left")
+    checkout_button = tk.Button(master=cart_window, text="Checkout")
+    checkout_button.pack(side="left")
+
+def empty_cart(list_box, total_label):
+    cart.clear()
+    list_box.delete(0, tk.END)
+    total_label['text'] = "Total: $0.00"
+    
 
 # Setup Fonts
 title_font = tk_font.Font(family="Arial", size=34)
@@ -146,21 +179,6 @@ heading_label = tk.Label(text=manager, font=heading_font, foreground=text_color,
 title_label.pack(side="top")
 subtitle_label.pack(side="top")
 heading_label.pack(side="top")
-
-# Cart
-print(cart)
-cart_frame = tk.Frame(master=main_window)
-for string in cart:
-    cart_item_frame = tk.Label(master=cart_frame)
-    
-    cart_item_check = tk.Checkbutton(master=cart_item_frame, variable=string[1])
-    cart_item_label = tk.Label(master=cart_item_frame, text=string[0])
-    cart_item_check.pack(side="left", anchor="w")
-    cart_item_label.pack(side="left", anchor="w")
-    
-    cart_item_frame.pack(side="top") 
-cart_frame.pack(side="right")
-    
 
 # Add Search Bar
 search_frame = tk.Frame(main_window, background=background_color)
