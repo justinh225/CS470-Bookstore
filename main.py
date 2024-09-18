@@ -19,7 +19,7 @@ manager = "Justin Heimes"
 main_window = tk.Tk()
 main_window.title(store_name)
 main_window.geometry = ('700x700')
-#main_window.maxsize(height="1000", width="1900")
+main_window.maxsize(height="1000", width="1900")
 main_window.configure(background=background_color)
 main_window.resizable(width=False, height=False)
 
@@ -27,33 +27,33 @@ cart = list()
 cart.append(("Test", tk.IntVar(value=0)))
 book_catalog = {
     "Kids": {
-        "David Shannon": [ ("No, David", tk.PhotoImage(file="Assets\\david_no.ppm", height=200, width=155), tk.IntVar()),
-                           ("David Goes to School",  tk.PhotoImage(file="Assets\\david_school.ppm", height=200, width=155), tk.IntVar()),
-                           ("David Gets in Trouble", tk.PhotoImage(file="Assets\\david_trouble.ppm", height=200, width=155), tk.IntVar()),
-                           ("It's Christmas, David!", tk.PhotoImage(file="Assets\\david_christmas.ppm", height=200, width=155), tk.IntVar()),
-                           ("Grow Up, David", tk.PhotoImage(file="Assets\\david_grow.ppm", height=200, width=155), tk.IntVar())]
+        "David Shannon": [ ("No, David", tk.PhotoImage(file="Assets\\david_no.ppm", height=120, width=120), tk.IntVar()),
+                           ("David Goes to School",  tk.PhotoImage(file="Assets\\david_school.ppm", height=120, width=120), tk.IntVar()),
+                           ("David Gets in Trouble", tk.PhotoImage(file="Assets\\david_trouble.ppm", height=120, width=120), tk.IntVar()),
+                           ("It's Christmas, David!", tk.PhotoImage(file="Assets\\david_christmas.ppm", height=120, width=120), tk.IntVar()),
+                           ("Grow Up, David", tk.PhotoImage(file="Assets\\david_grow.ppm", height=120, width=120), tk.IntVar())]
     },
     "Horror": {
-        "Stephen King": [ ("It", tk.PhotoImage(file="Assets\\it.ppm", height=200, width=155), tk.IntVar()), 
-                          ("The Shining", tk.PhotoImage(file="Assets\\shining.ppm", height=200, width=155), tk.IntVar())],
-        "Paul G. Tremblay": [ ("Cabin at the End of the World", tk.PhotoImage(file="Assets\\cabin.ppm", height=200, width=155), tk.IntVar()) ],
-        "H.P Lovecraft": [ ("The Call of Cthulhu", tk.PhotoImage(file="Assets\\cthulu.ppm", height=200, width=155), tk.IntVar()), 
-                           ("The Cats of Ulthar", tk.PhotoImage(file="Assets\\ulthar.ppm", height=200, width=155), tk.IntVar()) ]
+        "Stephen King": [ ("It", tk.PhotoImage(file="Assets\\it.ppm", height=120, width=120), tk.IntVar()), 
+                          ("The Shining", tk.PhotoImage(file="Assets\\shining.ppm", height=120, width=120), tk.IntVar())],
+        "Paul G. Tremblay": [ ("Cabin at the End of the World", tk.PhotoImage(file="Assets\\cabin.ppm",height=120, width=120), tk.IntVar()) ],
+        "H.P Lovecraft": [ ("The Call of Cthulhu", tk.PhotoImage(file="Assets\\cthulu.ppm", height=120, width=120), tk.IntVar()), 
+                           ("The Cats of Ulthar", tk.PhotoImage(file="Assets\\ulthar.ppm", height=120, width=120), tk.IntVar()) ]
     },
     "Dystopian": {
         "Suzanne Collins": [ 
-            ("The Hunger Games", tk.PhotoImage(file="Assets\\hunger.ppm", height=200, width=155), tk.IntVar()),
-            ("Catching Fire", tk.PhotoImage(file="Assets\\fire.ppm", height=200, width=155), tk.IntVar()), 
-            ("Mockingjay", tk.PhotoImage(file="Assets\\mockingjay.ppm", height=200, width=155), tk.IntVar()),
-            ("The Ballad of Songbirds and Snakes", tk.PhotoImage(file="Assets\\ballad.ppm", height=200, width=155), tk.IntVar()) ],
-        "George Orwell": [ ("1984", tk.PhotoImage(file="Assets\\1984.ppm", height=200, width=155), tk.IntVar()) ]
+            ("The Hunger Games", tk.PhotoImage(file="Assets\\hunger.ppm", height=120, width=120), tk.IntVar()),
+            ("Catching Fire", tk.PhotoImage(file="Assets\\fire.ppm", height=120, width=120), tk.IntVar()), 
+            ("Mockingjay", tk.PhotoImage(file="Assets\\mockingjay.ppm", height=120, width=120), tk.IntVar()),
+            ("The Ballad of Songbirds and Snakes", tk.PhotoImage(file="Assets\\ballad.ppm", height=110, width=120), tk.IntVar()) ],
+        "George Orwell": [ ("1984", tk.PhotoImage(file="Assets\\1984.ppm", height=120, width=120), tk.IntVar()) ]
     },
     "Classical": { 
-        "Dante Alighieri": [ ("Divine Comedy", tk.PhotoImage(file="Assets\\comedy.ppm", height=200, width=155), tk.IntVar()) ],
-        "Marcus Aurelias": [ ("Meditations", tk.PhotoImage(file="Assets\\meditations.ppm", height=200, width=155), tk.IntVar()) ],
-        "Fyodor Dostoevsky": [ ("Crime and Punishment", tk.PhotoImage(file="Assets\\crime.ppm", height=200, width=155), tk.IntVar()) ],
-        "George Orwell": [ ("Animal Farm", tk.PhotoImage(file="Assets\\animal.ppm", height=200, width=155), tk.IntVar()) ],
-        "J.D. Salinger": [ ("The Catcher in the Rye", tk.PhotoImage(file="Assets\\catcher.ppm", height=200, width=155), tk.IntVar()) ] 
+        "Dante Alighieri": [ ("Divine Comedy", tk.PhotoImage(file="Assets\\comedy.ppm", height=120, width=120), tk.IntVar()) ],
+        "Marcus Aurelias": [ ("Meditations", tk.PhotoImage(file="Assets\\meditations.ppm", height=120, width=120), tk.IntVar()) ],
+        "Fyodor Dostoevsky": [ ("Crime and Punishment", tk.PhotoImage(file="Assets\\crime.ppm", height=120, width=120), tk.IntVar()) ],
+        "George Orwell": [ ("Animal Farm", tk.PhotoImage(file="Assets\\animal.ppm", height=120, width=120), tk.IntVar()) ],
+        "J.D. Salinger": [ ("The Catcher in the Rye", tk.PhotoImage(file="Assets\\catcher.ppm", height=120, width=120), tk.IntVar()) ] 
     }
 }
 
@@ -63,6 +63,8 @@ def search_mainpage():
     # Get the search content
     search_content = search_box.get("1.0", tk.END)
     search_content = search_content.strip()
+    if(search_content == ""):
+        return
 
     # Clear display
     while list(display_frame.children.keys()):
@@ -260,15 +262,12 @@ search_type.pack(side="left", anchor="w", padx=15)
 search_frame.pack(side="top")
 
 # Add Container for book display
-display_scroll = tk.Scrollbar(master=main_window)
-display_scroll.pack(side="right", fill="y")
-
-display_canvas = tk.Canvas(main_window, background=background_color, height=800, yscrollcommand=display_scroll.set)
-display_canvas.pack(side="top")
+display_frame = tk.Frame(main_window, background=background_color)
+display_frame.pack(side="top")
 
 # Add default display
 for key in book_catalog:
-    genre_frame = tk.Frame(master=display_canvas, background=background_color)
+    genre_frame = tk.Frame(master=display_frame, background=background_color)
     genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
     genre_label.pack(side="top", anchor="w")
 
@@ -277,10 +276,10 @@ for key in book_catalog:
             title_frame = tk.Frame(master=genre_frame, background=background_color)
             image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
             title_label = tk.Label(master=title_frame, name="title", foreground=text_color, background=background_color, font=heading_font, text=title[0])
-            select_title_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+            select_title_button = tk.Checkbutton(master=title_frame, name="select_button", background=background_color)
             image_label.pack(side = "top")
-            title_label.pack(side = "top")
-            select_title_button.pack(side = "top")
+            title_label.pack(side = "left")
+            select_title_button.pack(side = "left")
             title_frame.pack(side="left", padx=20)
     genre_frame.pack(side="top")
 
