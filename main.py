@@ -19,7 +19,7 @@ manager = "Justin Heimes"
 main_window = tk.Tk()
 main_window.title(store_name)
 main_window.geometry = ('700x700')
-main_window.maxsize(height="1000", width="1900")
+main_window.maxsize(height="890", width="1900")
 main_window.configure(background=background_color)
 main_window.resizable(width=False, height=False)
 
@@ -309,9 +309,9 @@ def genre_select(sender):
     sender.set(True)
 
 # Setup Fonts
-title_font = tk_font.Font(family="Arial", size=34)
-subtitle_font = tk_font.Font(family="Arial", size=24)
-heading_font = tk_font.Font(family="Arial", size=12)
+title_font = tk_font.Font(family="Arial", size=12)
+subtitle_font = tk_font.Font(family="Arial", size=10)
+heading_font = tk_font.Font(family="Arial", size=8)
 
 # Init Header Text
 title_label = tk.Label(text = store_name, font=title_font, foreground=text_color, background=background_color)
@@ -366,12 +366,14 @@ for key in book_catalog:
     genre_frame.pack(side="top")
 
 # Add main buttons
-select_title_button = tk.Button(master=main_window, text="Add to Cart", command=add_to_cart)
-select_title_button.pack(side="top")
-view_cart_button = tk.Button(master=main_window, text="View Cart/Checkout", command=view_cart)
-view_cart_button.pack(side="top")
-view_cart_button = tk.Button(master=main_window, text="Exit", command=exit_app)
-view_cart_button.pack(side="top")
+main_button_frame = tk.Frame(master=main_window)
+select_title_button = tk.Button(master=main_button_frame, text="Add to Cart", command=add_to_cart)
+select_title_button.pack(side="left")
+view_cart_button = tk.Button(master=main_button_frame, text="View Cart/Checkout", command=view_cart)
+view_cart_button.pack(side="left")
+view_cart_button = tk.Button(master=main_button_frame, text="Exit", command=exit_app)
+view_cart_button.pack(side="left")
+main_button_frame.pack(side="top")
     
 # MainLoop
 main_window.mainloop()
