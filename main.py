@@ -9,8 +9,8 @@ global display_frame
 global cart
 global cart_listbox
 
-background_color = "#B3FF00"
-text_color = "#0035FF"
+background_color = "#8A765f"
+text_color = "#001169"
 store_name = "20 For 20 Bookstore"
 subtitle = "A bookstore for readers"
 manager = "Justin Heimes"
