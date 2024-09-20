@@ -131,11 +131,21 @@ def search_mainpage():
 
 # Adds an item to the cart
 def add_to_cart():
+    
     for key in book_catalog:
         for author in book_catalog[key]:
             for title in book_catalog[key][author]:
-                if(title[2].get() == 1 and cart.count(title[0]) <= 0):
-                    cart.append((title[0], tk.IntVar()))
+                print(title[0])
+                if(title[2].get() == 1):
+                    found = False
+                    for item in cart:
+                        if(item[0] == title[0]):
+                            found = True
+                    if(found):
+                        continue
+                    else:
+                        cart.append((title[0], tk.IntVar()))
+    deselect_all()
 
 # Creates the cart window graphics
 def view_cart():
@@ -220,6 +230,30 @@ def finish_callback(cart_window, complete_window):
     complete_window.destroy()
     cart_window.destroy()
     deselect_all()
+
+    # Clear display
+    while list(display_frame.children.keys()):
+        key = list(display_frame.children.keys())[0]
+        display_frame.children[key].destroy()
+
+    # Add default display
+    for key in book_catalog:
+        genre_frame = tk.Frame(master=display_frame, background=background_color)
+        genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
+        genre_label.pack(side="top", anchor="w")
+
+        for author in book_catalog[key]:
+            for title in book_catalog[key][author]:
+                title_frame = tk.Frame(master=genre_frame, background=background_color)
+                image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
+                title_label = tk.Label(master=title_frame, name="title", foreground=text_color, background=background_color, font=heading_font, text=title[0])
+                select_title_button = tk.Checkbutton(master=title_frame, name="select_button", variable=title[2], background=background_color)
+                image_label.pack(side = "top")
+                title_label.pack(side = "left")
+                select_title_button.pack(side = "left")
+                title_frame.pack(side="left", padx=20)
+        genre_frame.pack(side="top")
+    
 
 # Destroys the cart window and resets UI     
 def cancel_callback(cart_window):
