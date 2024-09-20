@@ -237,7 +237,7 @@ def complete_purchase(cart_window):
     response_time_label.pack(side="top")
     review_order_label = tk.Label(master=complete_window, text="Review Order:", background=background_color)
     review_order_label.pack(side="top")
-    items_box = tk.Listbox(master=complete_window)
+    items_box = tk.Listbox(master=complete_window, width=500)
     index = 0
     for title in cart:
         items_box.insert(index, title[0] + ": $20")
