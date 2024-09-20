@@ -66,6 +66,28 @@ def search_mainpage():
     search_box.delete("1.0", tk.END)
     search_box.insert(tk.END, search_content)
     if(search_content == ""):
+        # Clear display
+        while list(display_frame.children.keys()):
+            key = list(display_frame.children.keys())[0]
+            display_frame.children[key].destroy()
+
+        # Add default display
+        for key in book_catalog:
+            genre_frame = tk.Frame(master=display_frame, background=background_color)
+            genre_label = tk.Label(master=genre_frame, foreground=text_color, background=background_color, font=subtitle_font, padx="5", text=key)
+            genre_label.pack(side="top", anchor="w")
+
+            for author in book_catalog[key]:
+                for title in book_catalog[key][author]:
+                    title_frame = tk.Frame(master=genre_frame, background=background_color)
+                    image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
+                    title_label = tk.Label(master=title_frame, name="title", foreground=text_color, background=background_color, font=heading_font, text=title[0])
+                    select_title_button = tk.Checkbutton(master=title_frame, name="select_button", variable=title[2], background=background_color)
+                    image_label.pack(side = "top")
+                    title_label.pack(side = "left")
+                    select_title_button.pack(side = "left")
+                    title_frame.pack(side="left", padx=20)
+            genre_frame.pack(side="top")
         return
 
     # Clear display
@@ -86,7 +108,7 @@ def search_mainpage():
                         title_frame = tk.Frame(master=genre_frame, background=background_color)
                         image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
                         title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
-                        add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+                        add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button", background=background_color)
                         image_label.pack(side = "top")
                         title_label.pack(side = "top")
                         add_cart_button.pack(side = "top")
@@ -104,7 +126,7 @@ def search_mainpage():
                         title_frame = tk.Frame(master=genre_frame, background=background_color)
                         image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
                         title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
-                        add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+                        add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button", background=background_color)
                         image_label.pack(side = "top")
                         title_label.pack(side = "top")
                         add_cart_button.pack(side = "top")
@@ -122,7 +144,7 @@ def search_mainpage():
                             title_frame = tk.Frame(master=genre_frame, background=background_color)
                             image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
                             title_label = tk.Label(master=title_frame, foreground=text_color, background=background_color, font=heading_font, text=title[0])
-                            add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button")
+                            add_cart_button = tk.Checkbutton(master=title_frame, variable=title[2], name="select_button", background=background_color)
                             image_label.pack(side = "top")
                             title_label.pack(side = "top")
                             add_cart_button.pack(side = "top")
@@ -131,11 +153,10 @@ def search_mainpage():
 
 # Adds an item to the cart
 def add_to_cart():
-    
     for key in book_catalog:
         for author in book_catalog[key]:
             for title in book_catalog[key][author]:
-                print(title[0])
+                # Check if the title is selected and check if it is already in the cart
                 if(title[2].get() == 1):
                     found = False
                     for item in cart:
@@ -171,14 +192,18 @@ def view_cart():
     price_label.pack(side="top")
 
     # Setup Buttons
-    cancel_button = tk.Button(master=cart_window, text="Cancel", command=lambda:cancel_callback(cart_window))
+    button_frame = tk.Button(master=cart_window, background=background_color)
+    cancel_button = tk.Button(master=button_frame, text="Close Cart", command=lambda:close_callback(cart_window))
     cancel_button.pack(side="left")
-    remove_from_cart = tk.Button(master=cart_window, text="Remove Selected", command=lambda:remove_selected(cart_listbox, price_label))
+    cancel_button = tk.Button(master=button_frame, text="Cancel Order", command=lambda:cancel_callback(cart_window))
+    cancel_button.pack(side="left")
+    remove_from_cart = tk.Button(master=button_frame, text="Remove Selected", command=lambda:remove_selected(cart_listbox, price_label))
     remove_from_cart.pack(side="left")
-    empty_cart_button = tk.Button(master=cart_window, text="Empty Cart", command= lambda:empty_cart(cart_listbox, price_label))
+    empty_cart_button = tk.Button(master=button_frame, text="Empty Cart", command= lambda:empty_cart(cart_listbox, price_label))
     empty_cart_button.pack(side="left")
-    checkout_button = tk.Button(master=cart_window, text="Complete Purchase", command=lambda:complete_purchase(cart_window))
+    checkout_button = tk.Button(master=button_frame, text="Complete Purchase", command=lambda:complete_purchase(cart_window))
     checkout_button.pack(side="left")
+    button_frame.pack(side="top")
 
 # Clears all items from the cart and updates UI    
 def empty_cart(list_box, total_label):
@@ -254,11 +279,16 @@ def finish_callback(cart_window, complete_window):
                 title_frame.pack(side="left", padx=20)
         genre_frame.pack(side="top")
     
-
 # Destroys the cart window and resets UI     
+def close_callback(cart_window):
+    cart_window.destroy()
+    deselect_all
+
+# Destroys the cart window, clears cart and resets UI     
 def cancel_callback(cart_window):
     cart_window.destroy()
     deselect_all
+    cart.clear()
 
 # Deselects all checkboxes in the UI
 def deselect_all():
