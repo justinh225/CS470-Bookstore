@@ -24,7 +24,6 @@ main_window.configure(background=background_color)
 main_window.resizable(width=False, height=False)
 
 cart = list()
-cart.append(("Test", tk.IntVar(value=0)))
 book_catalog = {
     "Kids": {
         "David Shannon": [ ("No, David", tk.PhotoImage(file="Assets\\david_no.ppm", height=120, width=120), tk.IntVar()),
@@ -63,6 +62,9 @@ def search_mainpage():
     # Get the search content
     search_content = search_box.get("1.0", tk.END)
     search_content = search_content.strip()
+    search_content = search_content.strip('\n')
+    search_box.delete("1.0", tk.END)
+    search_box.insert(tk.END, search_content)
     if(search_content == ""):
         return
 
@@ -127,6 +129,7 @@ def search_mainpage():
                             title_frame.pack(side="left", padx=20)
             genre_frame.pack(side="top")
 
+# Adds an item to the cart
 def add_to_cart():
     for key in book_catalog:
         for author in book_catalog[key]:
@@ -134,6 +137,7 @@ def add_to_cart():
                 if(title[2].get() == 1 and cart.count(title[0]) <= 0):
                     cart.append((title[0], tk.IntVar()))
 
+# Creates the cart window graphics
 def view_cart():
     # Setup Cart Window
     cart_window = tk.Toplevel(background=background_color)
@@ -165,12 +169,14 @@ def view_cart():
     empty_cart_button.pack(side="left")
     checkout_button = tk.Button(master=cart_window, text="Complete Purchase", command=lambda:complete_purchase(cart_window))
     checkout_button.pack(side="left")
-    
+
+# Clears all items from the cart and updates UI    
 def empty_cart(list_box, total_label):
     cart.clear()
     list_box.delete(0, tk.END)
     total_label['text'] = "Total: $0.00"
-    
+
+# Removes a single item from the cart and updates    
 def remove_selected(list_box, price_label):
     selected_items = list_box.curselection()
     counter = 0
@@ -184,7 +190,8 @@ def remove_selected(list_box, price_label):
         counter += 1
     price = cart.__len__() * 20
     price_label['text'] = "Total: $" + price.__str__() + ".00"
-    
+
+# Displays complete purchase window and resets structures/UI    
 def complete_purchase(cart_window):
     complete_window = tk.Toplevel(background=background_color)
     complete_window.resizable(width=False, height=False)
@@ -208,23 +215,34 @@ def complete_purchase(cart_window):
     finish_button.pack(side="top")
     cart.clear()
 
+# Destroys the cart and completed purchase, resets UI 
 def finish_callback(cart_window, complete_window):
     complete_window.destroy()
     cart_window.destroy()
     deselect_all()
-        
+
+# Destroys the cart window and resets UI     
 def cancel_callback(cart_window):
     cart_window.destroy()
     deselect_all
 
+# Deselects all checkboxes in the UI
 def deselect_all():
     for key in book_catalog:
         for author in book_catalog[key]:
             for title in book_catalog[key][author]:
                 title[2].set(0)
-    
+
+# Destorys the main window    
 def exit_app():
     main_window.destroy()
+
+# Ensures only one search criteria is selected at a time
+def genre_select(sender):
+    genre_search.set(False)
+    author_search.set(False)
+    title_search.set(False)
+    sender.set(True)
 
 # Setup Fonts
 title_font = tk_font.Font(family="Arial", size=34)
@@ -255,9 +273,9 @@ search_type["menu"] = search_type.menu
 genre_search = tk.BooleanVar()
 author_search = tk.BooleanVar()
 title_search = tk.BooleanVar()
-search_type.menu.add_checkbutton(label="Genre", variable=genre_search)
-search_type.menu.add_checkbutton(label="Author", variable=author_search)
-search_type.menu.add_checkbutton(label="Title", variable=title_search)
+search_type.menu.add_checkbutton(label="Genre", variable=genre_search, command=lambda:genre_select(genre_search))
+search_type.menu.add_checkbutton(label="Author", variable=author_search, command=lambda:genre_select(author_search))
+search_type.menu.add_checkbutton(label="Title", variable=title_search, command=lambda:genre_select(title_search))
 search_type.pack(side="left", anchor="w", padx=15)
 search_frame.pack(side="top")
 
@@ -283,15 +301,13 @@ for key in book_catalog:
             title_frame.pack(side="left", padx=20)
     genre_frame.pack(side="top")
 
+# Add main buttons
 select_title_button = tk.Button(master=main_window, text="Add to Cart", command=add_to_cart)
 select_title_button.pack(side="top")
-
 view_cart_button = tk.Button(master=main_window, text="View Cart/Checkout", command=view_cart)
 view_cart_button.pack(side="top")
-
 view_cart_button = tk.Button(master=main_window, text="Exit", command=exit_app)
 view_cart_button.pack(side="top")
     
-
 # MainLoop
 main_window.mainloop()
