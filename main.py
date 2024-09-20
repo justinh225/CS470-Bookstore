@@ -294,7 +294,7 @@ for key in book_catalog:
             title_frame = tk.Frame(master=genre_frame, background=background_color)
             image_label = tk.Label(master=title_frame, image=title[1], background=background_color)
             title_label = tk.Label(master=title_frame, name="title", foreground=text_color, background=background_color, font=heading_font, text=title[0])
-            select_title_button = tk.Checkbutton(master=title_frame, name="select_button", background=background_color)
+            select_title_button = tk.Checkbutton(master=title_frame, name="select_button", variable=title[2], background=background_color)
             image_label.pack(side = "top")
             title_label.pack(side = "left")
             select_title_button.pack(side = "left")
